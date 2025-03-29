@@ -3,14 +3,14 @@ from src.views.tournament_view import TournamentView
 
 
 class AppView:
-    
+
     def stop(self):
         """
         Stop the application
         """
         print("Merci pour votre utilisation !")
         exit()
-    
+
     def start(self):
         """
         Start the application
@@ -28,9 +28,7 @@ class AppView:
             tournament_view.menu()
         elif choice == "3":
             self.stop()
-            
-    
-            
+
     def tournaments_menu(self):
         """
         Display the tournaments menu

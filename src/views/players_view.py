@@ -5,9 +5,10 @@ from src.controllers.player_controller import PlayerController
 
 class PlayersView:
     """ View for players """
+
     def __init__(self, back: Callable):
         self.back = back
-        
+
     def menu(self):
         """
         Display the players menu
@@ -24,7 +25,7 @@ class PlayersView:
             self.display_players(players)
         elif choice == "3":
             self.back()
-    
+
     def add_player_from_menu(self, back: Callable):
         """
         Add a player
@@ -34,12 +35,12 @@ class PlayersView:
         last_name = input("Nom du joueur : ")
         first_name = input("Prénom du joueur : ")
         birth_date = input("Date de naissance (format : jj/mm/aaaa) : ")
-        
+
         player = Player(id_national, last_name, first_name, birth_date)
         player = player.save()
         print("\nJoueur ajouté avec succès !")
         back()
-        
+
     def display_players(self, players: list[Player]):
         """
         Display all players
@@ -49,9 +50,7 @@ class PlayersView:
         for player in players:
             print(f"{index}. {player}")
             index += 1
-            
+
         go_back = input("\nAppuyez sur 'Enter' pour revenir au menu précédent")
         if go_back:
             self.back()
-        
-        

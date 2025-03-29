@@ -6,6 +6,7 @@ import os
 from src.helpers.constants import PLAYERS_DB_FILE
 from src.helpers.id_generator import generate_id
 
+
 class Player:
     def __init__(
         self,
@@ -22,19 +23,16 @@ class Player:
         self.last_name = last_name
         self.date_of_birth: datetime = datetime.strptime(date_of_birth, "%d/%m/%Y")
         self.points = points
-    
-    
-    
 
     def __str__(self):
         return f"{self.last_name.capitalize()} {self.first_name.capitalize()} - {self.id_national.upper()}"
-    
+
     def __repr__(self):
         return self.__str__()
-    
+
     def __eq__(self, other):
         return self.id_national == other.id_national
-    
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -44,12 +42,11 @@ class Player:
             "date_of_birth": self.date_of_birth.strftime("%d/%m/%Y"),
             "points": self.points,
         }
-        
-        
+
     def save(self):
         # Create directory if it doesn't exist
         os.makedirs(os.path.dirname(PLAYERS_DB_FILE), exist_ok=True)
-        
+
         # Load existing players or create empty list
         players = []
         if os.path.exists(PLAYERS_DB_FILE) and os.path.getsize(PLAYERS_DB_FILE) > 0:
@@ -59,17 +56,16 @@ class Player:
             except json.JSONDecodeError:
                 # If the file is not proper JSON, start with an empty list
                 players = []
-        
+
         # Add the current player
         players.append(self.to_dict())
-        
+
         # Write all players back to the file
         with open(PLAYERS_DB_FILE, "w") as f:
             json.dump(players, f, indent=4)
-            
+
         return self
-    
-    
+
     @staticmethod
     def get(id: str) -> "Player":
         players = Player.get_all()
@@ -77,7 +73,7 @@ class Player:
             if player.id == id:
                 return player
         return None
-    
+
     @staticmethod
     def get_by_id_national(id_national: str) -> "Player":
         players = Player.get_all()
@@ -85,7 +81,7 @@ class Player:
             if player.id_national == id_national:
                 return player
         return None
-    
+
     @staticmethod
     def get_all() -> list["Player"]:
         players = []
@@ -96,12 +92,5 @@ class Player:
                     players = [Player(**player_dict) for player_dict in player_dicts]
             except json.JSONDecodeError:
                 players = []
-                
-        return players
-        
 
-        
-        
-    
-    
-    
+        return players

@@ -6,6 +6,5 @@ def main():
     app_view.start()
 
 
-
 if __name__ == "__main__":
     main()
