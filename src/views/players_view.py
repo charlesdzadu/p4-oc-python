@@ -19,7 +19,9 @@ class PlayersView:
         if choice == "1":
             self.add_player_from_menu(self.menu)
         elif choice == "2":
-            self.display_players()
+            player_controller = PlayerController()
+            players: list[Player] = player_controller.get_az_list()
+            self.display_players(players)
         elif choice == "3":
             self.back()
     
@@ -38,12 +40,10 @@ class PlayersView:
         print("\nJoueur ajouté avec succès !")
         back()
         
-    def display_players(self):
+    def display_players(self, players: list[Player]):
         """
         Display all players
         """
-        player_controller = PlayerController()
-        players: list[Player] = player_controller.get_az_list()
         index: int = 1
         print("\nListe des joueurs (de A à Z) :")
         for player in players:

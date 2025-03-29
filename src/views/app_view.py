@@ -1,4 +1,5 @@
 from src.views.players_view import PlayersView
+from src.views.tournament_view import TournamentView
 
 
 class AppView:
@@ -23,7 +24,8 @@ class AppView:
             players_view = PlayersView(self.start)
             players_view.menu()
         elif choice == "2":
-            self.tournaments_menu()
+            tournament_view = TournamentView(self.start)
+            tournament_view.menu()
         elif choice == "3":
             self.stop()
             

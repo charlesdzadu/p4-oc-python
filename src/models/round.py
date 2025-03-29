@@ -1,8 +1,14 @@
 from datetime import datetime
-from models.match import Match
-
+from src.models.match import Match
+from src.helpers.id_generator import generate_id
 class Round:
-    def __init__(self, name: str, matches: list[Match]):
+    def __init__(
+        self,
+        name: str,
+        matches: list[Match],
+        id: str = None,
+    ):
+        self.id = id if id else generate_id()
         self.name = name
         self.matches = matches
         self.started_at = None
