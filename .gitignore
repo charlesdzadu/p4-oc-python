@@ -1,0 +1,6 @@
+.venv
+data/tournaments/*
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
