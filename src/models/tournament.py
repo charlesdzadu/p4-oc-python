@@ -61,7 +61,17 @@ class Tournament:
             except json.JSONDecodeError:
                 tournaments = []
 
-        tournaments.append(self.to_dict())
+        # Check if tournament with same ID exists
+        tournament_updated = False
+        for i, tournament in enumerate(tournaments):
+            if tournament["id"] == self.id:
+                tournaments[i] = self.to_dict()
+                tournament_updated = True
+                break
+        
+        # If tournament wasn't found, append new one
+        if not tournament_updated:
+            tournaments.append(self.to_dict())
 
         with open(TOURNAMENTS_DB_FILE, "w") as f:
             json.dump(tournaments, f, indent=4)
@@ -101,7 +111,7 @@ class Tournament:
 
             t_rounds = []
             for round_id in tournament["rounds"]:
-                round = Round.get_by_id(round_id)
+                round = Round.get(round_id)
                 if round:
                     t_rounds.append(round)
 

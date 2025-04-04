@@ -41,16 +41,26 @@ class Round:
     
     def save(self):
         os.makedirs(os.path.dirname(ROUNDS_DB_FILE), exist_ok=True)
-        
         rounds = []
+        
         if os.path.exists(ROUNDS_DB_FILE) and os.path.getsize(ROUNDS_DB_FILE) > 0:
             try:
                 with open(ROUNDS_DB_FILE, "r") as f:
                     rounds = json.load(f)
             except json.JSONDecodeError:
                 rounds = []
-                
-        rounds.append(self.to_dict())
+        
+        # Check if round with same ID exists
+        round_updated = False
+        for i, round in enumerate(rounds):
+            if round["id"] == self.id:
+                rounds[i] = self.to_dict()
+                round_updated = True
+                break
+        
+        # If round wasn't found, append new one
+        if not round_updated:
+            rounds.append(self.to_dict())
         
         with open(ROUNDS_DB_FILE, "w") as f:
             json.dump(rounds, f, indent=4)

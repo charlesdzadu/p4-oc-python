@@ -57,8 +57,17 @@ class Player:
                 # If the file is not proper JSON, start with an empty list
                 players = []
 
-        # Add the current player
-        players.append(self.to_dict())
+        # Check if player with same ID exists
+        player_updated = False
+        for i, player in enumerate(players):
+            if player["id"] == self.id:
+                players[i] = self.to_dict()
+                player_updated = True
+                break
+        
+        # If player wasn't found, append new one
+        if not player_updated:
+            players.append(self.to_dict())
 
         # Write all players back to the file
         with open(PLAYERS_DB_FILE, "w") as f:

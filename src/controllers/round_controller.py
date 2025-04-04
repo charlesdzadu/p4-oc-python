@@ -10,7 +10,12 @@ class RoundController:
     def __init__(self, tournament: Tournament):
         self.tournament = tournament
         self.player_controller = PlayerController()
-    def start_round(self):
+    
+    def is_last_round_finished(self) -> bool:
+        """ Check if the last round is finished """
+        return self.tournament.rounds[-1].finished_at is not None
+    
+    def start_round(self) -> dict:
         """ 
         Start a new round for a tournament.
         
@@ -20,38 +25,35 @@ class RoundController:
         Returns:
             None
         """
-        
-        
-        #1. Check if current is 0
-        #2. If yes, create a new round
-        #3. If no check if all the matches are played
-        #4. If yes, create a new round
-        #5. To create a new round. 
-        #5.1. Name it "Round X" and X is the current round + 1
-        #5.2. Set the current round to the new round
-        #5.3. Si c'est le premier tour on va melanger les joueurs de façon aléatoire.
-        #5.4. Sinon le tour est gérer dynamique de cette façon :
-        #5.4.1. Triez tous les joueurs en fonction de leur nombre total de points dans le tournoi.
-        #5.4.2. Associez les joueurs dans l'ordre (le joueur 1 avec le joueur 2, le joueur 3 avec le joueur 4 et ainsi de suite.)
-        #5.4.3. Si plusieurs joueurs ont le même nombre de points, vous pouvez les choisir de façon aléatoire.
-        #5.4.4. Lors de la génération des paires, évitez de créer des matchs identiques
-        #5.4.5. Un tirage au sort des joueurs définira qui joue en blanc et qui joue en noir 
-        
-        
-        
         current_round = self.tournament.current_round
         if current_round == 0:
-            # Create a new round
-            res = self.create_new_round(is_first_round=True)
-            
-        elif current_round > self.tournament.rounds_count:
-            # Return error message
-            pass
+            round = self.create_new_round(is_first_round=True)
+            return {
+                "success": True,
+                "message": "Le premier tour est créé avec succès. ",
+                "round": round,
+            }
+
+        elif current_round >= self.tournament.rounds_count:
+            return {
+                "success": False,
+                "message": "Le nombre maximum de tours est atteint",
+                "round": None,
+            }
         else:
-            # Check if all the matches are played
-            # If yes, create a new round
-            # If no, return error message
-            pass
+            if self.is_last_round_finished():
+                round = self.create_new_round()
+                return {
+                    "success": True,
+                    "message": f"Le tour {round.name} est créé avec succès. ",
+                    "round": round,
+                }
+            else:
+                return {
+                    "success": False,
+                    "message": "Le dernier tour n'est pas terminé. Veuillez terminer le tour avant de créer un nouveau tour.",
+                    "round": None,
+                }
         
     
     
@@ -65,7 +67,12 @@ class RoundController:
                 player2 = players_with_score[i + 1][0]
                 player1_color = random.choice(["white", "black"]) 
                 player2_color = "black" if player1_color == "white" else "white"
-                match = Match(player1, player2, player_1_color=player1_color, player_2_color=player2_color)
+                match = Match(
+                    player_1=player1,
+                    player_2=player2,
+                    player_1_color=player1_color,
+                    player_2_color=player2_color,
+                )
                 matches.append(match)
         
         return matches
@@ -99,6 +106,7 @@ class RoundController:
         round.save()
         
         self.tournament.current_round += 1
+        self.tournament.rounds.append(round)
         self.tournament.save()
         
         return round
