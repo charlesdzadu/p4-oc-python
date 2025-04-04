@@ -15,11 +15,11 @@ class AppView:
         """
         Start the application
         """
-        print("Bienvenue dans le programme de gestion de tournois d'echecs !")
+        print("\nBienvenue dans le programme de gestion de tournois d'echecs !")
         print("1. Joueurs")
         print("2. Tournois")
         print("3. Quitter")
-        choice = input("Entrez votre choix : ")
+        choice = input("\nEntrez votre choix : ")
         if choice == "1":
             players_view = PlayersView(self.start)
             players_view.menu()

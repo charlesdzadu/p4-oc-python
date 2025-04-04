@@ -1,3 +1,4 @@
+from random import random
 from src.models.player import Player
 
 
@@ -12,3 +13,8 @@ class PlayerController:
     def sort_by_last_name(self, players: list[Player]) -> list[Player]:
         """ Sort players by last name """
         return sorted(players, key=lambda x: x.last_name)
+    
+    
+    def shuffle_players(self, players: list[Player]) -> list[Player]:
+        """ Shuffle players """
+        return random.shuffle(players)

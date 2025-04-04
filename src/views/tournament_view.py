@@ -1,6 +1,7 @@
 import datetime
 from typing import Callable
 
+from src.controllers.round_controller import RoundController
 from src.models.player import Player
 from src.helpers.safe_input import safe_input
 from src.controllers.player_controller import PlayerController
@@ -36,17 +37,19 @@ class TournamentView:
         print("\nMenu du tournoi :")
         print("1. Afficher les joueurs")
         print("2. Afficher les tours")
+        print("3. Démarrer un tour")
         print("3. Retour")
         choice = input("Entrez votre choix : ")
 
         if choice == "1":
             players_view = PlayersView(self.back)
-            player_controller = PlayerController()
-            sorted_player_list = player_controller.sort_by_last_name(tournament.players)
+            sorted_player_list = PlayerController().sort_by_last_name(tournament.players)
             players_view.display_players(sorted_player_list)
         elif choice == "2":
             self.display_rounds(tournament)
         elif choice == "3":
+            RoundController(tournament).start_round()
+        elif choice:
             self.back()
 
     def display_rounds(self, tournament: Tournament):
@@ -66,8 +69,8 @@ class TournamentView:
         location = safe_input("Localisation : ")
         start_date = safe_input("Date de début (format JJ/MM/AAAA) : ", type=datetime.date, date_format="%d/%m/%Y")
         end_date = safe_input("Date de fin (format JJ/MM/AAAA) : ", type=datetime.date, date_format="%d/%m/%Y")
-        description = safe_input("Description : ", allow_empty=True)
-        rounds_count = safe_input("Nombre de tours (4 par défaut) : ", type=int,
+        description: str = safe_input("Description : ", allow_empty=True)
+        rounds_count: int = safe_input("Nombre de tours (4 par défaut) : ", type=int,
                                   min_value=1, max_value=100, allow_empty=True)
 
         print("\nNous allons maintenant ajouter les joueurs au tournoi.")
@@ -82,13 +85,7 @@ class TournamentView:
                 if player in players:
                     print(f"{bcolors.WARNING} Joueur déjà dans le tournoi.{bcolors.ENDC}")
                 else:
-                    print(
-                        f"{
-                            bcolors.OKGREEN} Joueur trouvé : {
-                            player.first_name} {
-                            player.last_name} (ID National : {
-                            player.id_national}){
-                            bcolors.ENDC}")
+                    print(f"{bcolors.OKGREEN} Joueur trouvé : {player.first_name} {player.last_name} (ID National : {player.id_national}){bcolors.ENDC}")
                     players.append(player)
             else:
                 print(f"{bcolors.FAIL} Joueur non trouvé.{bcolors.ENDC}")
@@ -99,7 +96,7 @@ class TournamentView:
             start_date=start_date,
             end_date=end_date,
             description=description,
-            rounds_count=rounds_count if rounds_count else 4,
+            rounds_count=int(rounds_count) if rounds_count else 4,
             players=players
         )
 

@@ -16,7 +16,7 @@ class Tournament:
         start_date: str,
         end_date: str,
         rounds_count: int = 4,
-        current_round: int = 1,
+        current_round: int = 0,
         players: list[Player] = [],
         rounds: list[Round] = [],
         description: str = "",
