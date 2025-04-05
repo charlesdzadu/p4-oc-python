@@ -1,3 +1,4 @@
+from src.helpers.constants import LOGO_TOURNOI_ECHECS
 from src.views.players_view import PlayersView
 from src.views.tournament_view import TournamentView
 
@@ -15,6 +16,7 @@ class AppView:
         """
         Start the application
         """
+        print(LOGO_TOURNOI_ECHECS)
         print("\nBienvenue dans le programme de gestion de tournois d'echecs !")
         print("1. Joueurs")
         print("2. Tournois")

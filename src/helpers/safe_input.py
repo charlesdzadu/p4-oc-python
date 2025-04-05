@@ -7,7 +7,8 @@ def safe_input(
     min_value=None,
     max_value=None,
     date_format="%Y-%m-%d",
-    allow_empty=False
+    allow_empty=False,
+    custom_validator: callable = None
 ) -> type:
     """
     Safe input function that validates user input based on the specified type and value constraints.
@@ -40,7 +41,8 @@ def safe_input(
             # Handle escape sequences
             if user_input.lower() in ['q', 'quit', 'exit', 'cancel', 'escape']:
                 return None
-
+            
+            
             # Handle date types
             if type == datetime.date or type == datetime.datetime:
                 try:
@@ -110,7 +112,7 @@ def safe_input(
                     print(f"{bcolors.FAIL} Erreur: La valeur doit être au plus {max_value}.{bcolors.ENDC}")
                     continue
 
-            return user_input
+            return value
 
         except ValueError:
             print(
