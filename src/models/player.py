@@ -21,7 +21,7 @@ class Player:
         self.id_national = id_national
         self.first_name = first_name
         self.last_name = last_name
-        self.date_of_birth: datetime = datetime.strptime(date_of_birth, "%d/%m/%Y")
+        self.date_of_birth = datetime.strptime(date_of_birth, "%d/%m/%Y")
         self.points = points
 
     def __str__(self):

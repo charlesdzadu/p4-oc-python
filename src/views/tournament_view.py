@@ -16,40 +16,46 @@ class TournamentView:
         self.back = back
 
     def menu(self):
-        print("\n1. Ajouter un tournoi")
+        print(f"\n{bcolors.BOLD}Gestion des tournois{bcolors.ENDC}")
+        print("1. Ajouter un tournoi")
         print("2. Afficher les tournois")
         print("3. Retour")
-        choice = input("Entrez votre choix : ")
-        if choice == "1":
+        choice = safe_input("Entrez votre choix : ", type=int, min_value=1, max_value=3)
+        if choice == 1:
             self.add_tournament_from_menu(self.menu)
-        elif choice == "2":
+        elif choice == 2:
             self.display_tournaments()
-        elif choice == "3":
+        elif choice == 3:
             self.back()
 
     def display_tournament_details(self, tournament: Tournament, only_menu: bool = False):
         
         
         if not only_menu:
-            print(f"\nTournoi : {tournament.name}")
+            print(f"\n{bcolors.OKCYAN}Tournoi : {tournament.name}{bcolors.ENDC}")
             print(f"Localisation : {tournament.location}")
             print(f"Date : {tournament.start_date}")
             print(f"Description : {tournament.description}")
             print(f"Nombre de tours : {tournament.rounds_count}")
             print(f"Tour actuel : {tournament.current_round}")
 
-        print("\nMenu du tournoi :")
+        print(f"\n{bcolors.BOLD}Menu du tournoi :{bcolors.ENDC}")
         print("1. Afficher les joueurs")
         print("2. Afficher les tours")
         print("3. Démarrer un tour")
         print("4. Retour")
-        choice = input("Entrez votre choix : ")
-        choice = int(choice)
+        choice = safe_input("Entrez votre choix : ", type=int, min_value=1, max_value=4)
 
         if choice == 1:
             players_view = PlayersView(self.back)
             sorted_player_list = PlayerController().sort_by_last_name(tournament.players)
-            players_view.display_players(sorted_player_list)
+            players_view.display_players(
+                sorted_player_list, 
+                return_to_menu=lambda: self.display_tournament_details(
+                    tournament,
+                    only_menu=True
+                )
+            )
             
         elif choice == 2:
             self.display_rounds(tournament)
@@ -138,17 +144,24 @@ class TournamentView:
         back()
 
     def display_tournaments(self):
+        """
+        Display all tournaments
+        """
         tournaments = Tournament.get_all()
         if not tournaments or len(tournaments) == 0:
             print("Aucun tournoi trouvé.")
             return
-        print("\nListe des tournois (Utilisez l'index pour afficher les détails) :")
+        
+        
+        
+        print(f"\n{bcolors.BOLD}Liste des tournois (Utilisez l'index pour afficher les détails. Appuyez sur 0 pour revenir au menu principal){bcolors.ENDC}")
+        
         for index, tournament in enumerate(tournaments, start=1):
             print(f"{index}. {tournament}")
 
-        index = int(input("Entrez l'index du tournoi à afficher : "))
+        index = safe_input("Entrez l'index du tournoi à afficher : ", type=int, min_value=0, max_value=len(tournaments))
         if index > 0 and index <= len(tournaments):
             tournament = tournaments[index - 1]
             self.display_tournament_details(tournament)
         else:
-            print("Index invalide.")
+            self.back()
