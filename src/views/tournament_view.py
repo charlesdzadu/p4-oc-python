@@ -28,6 +28,8 @@ class TournamentView:
             self.back()
 
     def display_tournament_details(self, tournament: Tournament, only_menu: bool = False):
+        
+        
         if not only_menu:
             print(f"\nTournoi : {tournament.name}")
             print(f"Localisation : {tournament.location}")
@@ -40,16 +42,19 @@ class TournamentView:
         print("1. Afficher les joueurs")
         print("2. Afficher les tours")
         print("3. Démarrer un tour")
-        print("3. Retour")
+        print("4. Retour")
         choice = input("Entrez votre choix : ")
+        choice = int(choice)
 
-        if choice == "1":
+        if choice == 1:
             players_view = PlayersView(self.back)
             sorted_player_list = PlayerController().sort_by_last_name(tournament.players)
             players_view.display_players(sorted_player_list)
-        elif choice == "2":
+            
+        elif choice == 2:
             self.display_rounds(tournament)
-        elif choice == "3":
+            
+        elif choice == 3:
             res = RoundController(tournament).start_round()
             if res["success"]:
                 print(f"\n{bcolors.OKGREEN}{res['message']}{bcolors.ENDC}")
@@ -58,10 +63,12 @@ class TournamentView:
                 
             print("\n")
             self.display_tournament_details(tournament, only_menu=True)
-        elif choice:
+            
+        elif choice == 4:
             self.back()
 
     def display_rounds(self, tournament: Tournament):
+        print("\nEntrez 0 pour revenir au menu principal")
         print("\nListe des tours :")
         index = 1
         for round in tournament.rounds:
@@ -69,19 +76,21 @@ class TournamentView:
             if not round.started_at and not round.finished_at:
                 message += f" - {bcolors.OKBLUE}Pas commencé{bcolors.ENDC}"
             elif round.started_at and not round.finished_at:
-                message += f" - {bcolors.OKGREEN}En cours{bcolors.ENDC}"
+                message += f" - {bcolors.WARNING}En cours{bcolors.ENDC}"
             elif round.finished_at:
                 message += f" - {bcolors.OKGREEN}Terminé{bcolors.ENDC}"
             print(message)
             index += 1
             
-        index = int(input("Entrez l'index du tour à afficher : "))
+        index = safe_input("Entrez l'index du tour à afficher : ", type=int, min_value=0, max_value=len(tournament.rounds))
+        index = int(index)
         if index > 0 and index <= len(tournament.rounds):
             round = tournament.rounds[index - 1]
-            round_view = RoundView(back=self.display_rounds)
+            round_view = RoundView(lambda: self.display_rounds(tournament))
             round_view.display_single_round(round)
         else:
-            print("Index invalide.")
+            self.display_tournament_details(tournament, only_menu=True)
+            
 
     def add_tournament_from_menu(self, back: Callable):
         """

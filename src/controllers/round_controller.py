@@ -1,3 +1,4 @@
+from datetime import datetime
 import random
 from src.models.round import Round
 from src.controllers.player_controller import PlayerController
@@ -102,7 +103,11 @@ class RoundController:
         for match in matches:
             match.save()
             
-        round = Round(name=f"Round {self.tournament.current_round + 1}", matches=matches)
+        round = Round(
+            name=f"Round {self.tournament.current_round + 1}",
+            matches=matches,
+            started_at=datetime.now(),
+        )
         round.save()
         
         self.tournament.current_round += 1
