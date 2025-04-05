@@ -7,22 +7,23 @@ from src.models.player import Player
 from src.models.tournament import Tournament
 from src.models.match import Match
 
+
 class RoundController:
     def __init__(self, tournament: Tournament):
         self.tournament = tournament
         self.player_controller = PlayerController()
-    
+
     def is_last_round_finished(self) -> bool:
         """ Check if the last round is finished """
         return self.tournament.rounds[-1].finished_at is not None
-    
+
     def start_round(self) -> dict:
-        """ 
+        """
         Start a new round for a tournament.
-        
+
         Args:
             tournament (Tournament): The tournament to start the round for.
-            
+
         Returns:
             None
         """
@@ -50,15 +51,16 @@ class RoundController:
                     "round": round,
                 }
             else:
+                error_msg = (
+                    "Le dernier tour n'est pas terminé. "
+                    "Veuillez terminer le tour avant de créer un nouveau tour."
+                )
                 return {
                     "success": False,
-                    "message": "Le dernier tour n'est pas terminé. Veuillez terminer le tour avant de créer un nouveau tour.",
+                    "message": error_msg,
                     "round": None,
                 }
-        
-    
-    
-    
+
     def create_matches(self, players_with_score: list[tuple[Player, int]]) -> list[Match]:
         """ Create matches for a round """
         matches = []
@@ -66,7 +68,7 @@ class RoundController:
             if i + 1 < len(players_with_score):
                 player1 = players_with_score[i][0]
                 player2 = players_with_score[i + 1][0]
-                player1_color = random.choice(["white", "black"]) 
+                player1_color = random.choice(["white", "black"])
                 player2_color = "black" if player1_color == "white" else "white"
                 match = Match(
                     player_1=player1,
@@ -75,50 +77,43 @@ class RoundController:
                     player_2_color=player2_color,
                 )
                 matches.append(match)
-        
+
         return matches
-        
+
     def create_new_round(self, is_first_round: bool = False):
         """ """
         players = self.tournament.players
         tournament_controller = TournamentController()
         players_with_score: list[tuple[Player, int]] = []
-        
+
         # Get total score for each player
         for player in players:
             score = tournament_controller.get_single_player_total_score(player, self.tournament)
             players_with_score.append((player, score))
-        
+
         # Sort players with score by score
         players_with_score.sort(key=lambda x: x[1], reverse=True)
-        
+
         if is_first_round:
             # Shuffle players with score to make the first round random
             random.shuffle(players_with_score)
-        
+
         # Create matches
         matches = self.create_matches(players_with_score)
-        
+
         # Create a new round
         for match in matches:
             match.save()
-            
+
         round = Round(
             name=f"Round {self.tournament.current_round + 1}",
             matches=matches,
             started_at=datetime.now(),
         )
         round.save()
-        
+
         self.tournament.current_round += 1
         self.tournament.rounds.append(round)
         self.tournament.save()
-        
+
         return round
-        
-        
-        
-        
-            
-            
-            

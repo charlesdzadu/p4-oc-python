@@ -63,7 +63,7 @@ class Match:
                 matches[i] = self.to_dict()
                 match_updated = True
                 break
-        
+
         # If match wasn't found, append new one
         if not match_updated:
             matches.append(self.to_dict())

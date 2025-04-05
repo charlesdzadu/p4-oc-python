@@ -29,8 +29,7 @@ class TournamentView:
             self.back()
 
     def display_tournament_details(self, tournament: Tournament, only_menu: bool = False):
-        
-        
+
         if not only_menu:
             print(f"\n{bcolors.OKCYAN}Tournoi : {tournament.name}{bcolors.ENDC}")
             print(f"Localisation : {tournament.location}")
@@ -50,26 +49,26 @@ class TournamentView:
             players_view = PlayersView(self.back)
             sorted_player_list = PlayerController().sort_by_last_name(tournament.players)
             players_view.display_players(
-                sorted_player_list, 
+                sorted_player_list,
                 return_to_menu=lambda: self.display_tournament_details(
                     tournament,
                     only_menu=True
                 )
             )
-            
+
         elif choice == 2:
             self.display_rounds(tournament)
-            
+
         elif choice == 3:
             res = RoundController(tournament).start_round()
             if res["success"]:
                 print(f"\n{bcolors.OKGREEN}{res['message']}{bcolors.ENDC}")
             else:
                 print(f"\n{bcolors.FAIL}{res['message']}{bcolors.ENDC}")
-                
+
             print("\n")
             self.display_tournament_details(tournament, only_menu=True)
-            
+
         elif choice == 4:
             self.back()
 
@@ -87,8 +86,9 @@ class TournamentView:
                 message += f" - {bcolors.OKGREEN}Terminé{bcolors.ENDC}"
             print(message)
             index += 1
-            
-        index = safe_input("Entrez l'index du tour à afficher : ", type=int, min_value=0, max_value=len(tournament.rounds))
+
+        index = safe_input("Entrez l'index du tour à afficher : ", type=int,
+                           min_value=0, max_value=len(tournament.rounds))
         index = int(index)
         if index > 0 and index <= len(tournament.rounds):
             round = tournament.rounds[index - 1]
@@ -96,7 +96,6 @@ class TournamentView:
             round_view.display_single_round(round)
         else:
             self.display_tournament_details(tournament, only_menu=True)
-            
 
     def add_tournament_from_menu(self, back: Callable):
         """
@@ -110,7 +109,7 @@ class TournamentView:
         end_date = safe_input("Date de fin (format JJ/MM/AAAA) : ", type=datetime.date, date_format="%d/%m/%Y")
         description: str = safe_input("Description : ", allow_empty=True)
         rounds_count: int = safe_input("Nombre de tours (4 par défaut) : ", type=int,
-                                  min_value=1, max_value=100, allow_empty=True)
+                                       min_value=1, max_value=100, allow_empty=True)
 
         print("\nNous allons maintenant ajouter les joueurs au tournoi.")
         players = []
@@ -124,7 +123,13 @@ class TournamentView:
                 if player in players:
                     print(f"{bcolors.WARNING} Joueur déjà dans le tournoi.{bcolors.ENDC}")
                 else:
-                    print(f"{bcolors.OKGREEN} Joueur trouvé : {player.first_name} {player.last_name} (ID National : {player.id_national}){bcolors.ENDC}")
+                    print(
+                        f"{
+                            bcolors.OKGREEN} Joueur trouvé : {
+                            player.first_name} {
+                            player.last_name} (ID National : {
+                            player.id_national}){
+                            bcolors.ENDC}")
                     players.append(player)
             else:
                 print(f"{bcolors.FAIL} Joueur non trouvé.{bcolors.ENDC}")
@@ -151,15 +156,23 @@ class TournamentView:
         if not tournaments or len(tournaments) == 0:
             print("Aucun tournoi trouvé.")
             return
-        
-        
-        
-        print(f"\n{bcolors.BOLD}Liste des tournois (Utilisez l'index pour afficher les détails. Appuyez sur 0 pour revenir au menu principal){bcolors.ENDC}")
-        
+
+        print(
+            f"\n{bcolors.BOLD}"
+            "Liste des tournois "
+            "(Utilisez l'index pour afficher les détails. "
+            "Appuyez sur 0 pour revenir au menu principal)"
+            f"{bcolors.ENDC}"
+        )
+
         for index, tournament in enumerate(tournaments, start=1):
             print(f"{index}. {tournament}")
 
-        index = safe_input("Entrez l'index du tournoi à afficher : ", type=int, min_value=0, max_value=len(tournaments))
+        index = safe_input(
+            "Entrez l'index du tournoi à afficher : ",
+            type=int,
+            min_value=0,
+            max_value=len(tournaments))
         if index > 0 and index <= len(tournaments):
             tournament = tournaments[index - 1]
             self.display_tournament_details(tournament)

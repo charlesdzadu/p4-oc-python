@@ -1,6 +1,5 @@
 from datetime import datetime
 from src.helpers.colors import bcolors
-from src.helpers.validator import is_valid_player_national_id
 
 
 def safe_input(
@@ -48,7 +47,6 @@ def safe_input(
                 except ValueError:
                     print(f"{bcolors.FAIL}Veuillez entrer un nombre entier valide.{bcolors.ENDC}")
                     continue
-
 
             return user_input
 

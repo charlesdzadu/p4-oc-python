@@ -68,7 +68,7 @@ class Tournament:
                 tournaments[i] = self.to_dict()
                 tournament_updated = True
                 break
-        
+
         # If tournament wasn't found, append new one
         if not tournament_updated:
             tournaments.append(self.to_dict())

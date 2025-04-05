@@ -29,7 +29,7 @@ class Round:
 
     def __str__(self):
         return f"{self.name} - {self.matches}"
-    
+
     def to_dict(self):
         return {
             "id": self.id,
@@ -38,18 +38,18 @@ class Round:
             "started_at": self.started_at.isoformat() if self.started_at else None,
             "finished_at": self.finished_at.isoformat() if self.finished_at else None,
         }
-    
+
     def save(self):
         os.makedirs(os.path.dirname(ROUNDS_DB_FILE), exist_ok=True)
         rounds = []
-        
+
         if os.path.exists(ROUNDS_DB_FILE) and os.path.getsize(ROUNDS_DB_FILE) > 0:
             try:
                 with open(ROUNDS_DB_FILE, "r") as f:
                     rounds = json.load(f)
             except json.JSONDecodeError:
                 rounds = []
-        
+
         # Check if round with same ID exists
         round_updated = False
         for i, round in enumerate(rounds):
@@ -57,16 +57,16 @@ class Round:
                 rounds[i] = self.to_dict()
                 round_updated = True
                 break
-        
+
         # If round wasn't found, append new one
         if not round_updated:
             rounds.append(self.to_dict())
-        
+
         with open(ROUNDS_DB_FILE, "w") as f:
             json.dump(rounds, f, indent=4)
-            
+
         return self
-    
+
     @staticmethod
     def get_all() -> list["Round"]:
         rounds: list[Round] = []
@@ -77,20 +77,29 @@ class Round:
                     for round_dict in rounds_dicts:
                         matches_ids = round_dict["matches"]
                         matches = [Match.get(match_id) for match_id in matches_ids]
+                        started_at = (
+                            datetime.fromisoformat(round_dict["started_at"])
+                            if round_dict["started_at"]
+                            else None
+                        )
+                        finished_at = (
+                            datetime.fromisoformat(round_dict["finished_at"])
+                            if round_dict["finished_at"]
+                            else None
+                        )
                         round = Round(
                             name=round_dict["name"],
                             matches=matches,
                             id=round_dict["id"],
-                            started_at=datetime.fromisoformat(round_dict["started_at"]) if round_dict["started_at"] else None,
-                            finished_at=datetime.fromisoformat(round_dict["finished_at"]) if round_dict["finished_at"] else None,
+                            started_at=started_at,
+                            finished_at=finished_at,
                         )
                         rounds.append(round)
             except json.JSONDecodeError:
                 rounds: list[Round] = []
-                
+
         return rounds
-    
-    
+
     @staticmethod
     def get(id: str) -> "Round":
         rounds = Round.get_all()
@@ -98,5 +107,3 @@ class Round:
             if round.id == id:
                 return round
         return None
-            
-            

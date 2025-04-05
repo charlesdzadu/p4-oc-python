@@ -64,7 +64,7 @@ class Player:
                 players[i] = self.to_dict()
                 player_updated = True
                 break
-        
+
         # If player wasn't found, append new one
         if not player_updated:
             players.append(self.to_dict())

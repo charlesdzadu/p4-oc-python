@@ -1,6 +1,4 @@
 from src.helpers.safe_input import safe_input
-from src.helpers.colors import bcolors
-from src.helpers.constants import LOGO_TOURNOI_ECHECS
 from src.views.players_view import PlayersView
 from src.views.tournament_view import TournamentView
 
@@ -18,7 +16,6 @@ class AppView:
         """
         Start the application
         """
-  
         print("1. Joueurs")
         print("2. Tournois")
         print("3. Quitter")

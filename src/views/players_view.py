@@ -34,20 +34,23 @@ class PlayersView:
     def add_player_from_menu(self, back: Callable):
         """
         Add a player
-        
+
         Args:
             back: Callable - The function to call when the user wants to go back to the previous menu
-        
+
         Returns:
             None
         """
         print("\nAjout d'un joueur")
         id_national = safe_input("ID national du joueur (format : AA00000) : ", type=str)
         if not is_valid_player_national_id(id_national):
-            print(f"{bcolors.FAIL}Erreur : L'ID national du joueur doit contenir 7 caractères alphanumériques, avec les 2 premiers caractères en lettres et les 5 suivants en chiffres.{bcolors.ENDC}")
+            print(
+                f"{bcolors.FAIL}Erreur : L'ID national du joueur doit contenir 7 caractères "
+                f"alphanumériques, avec les 2 premiers caractères en lettres et les 5 suivants "
+                f"en chiffres.{bcolors.ENDC}"
+            )
             back()
-         
-         
+
         # Check if the player already exists
         id_national = id_national.upper()
         player = Player.get_by_id_national(id_national)
@@ -67,10 +70,10 @@ class PlayersView:
     def display_players(self, players: list[Player], return_to_menu: Callable | None = None):
         """
         Display all players
-        
+
         Args:
             players: list[Player] - The list of players to display
-        
+
         Returns:
             None
         """
@@ -84,5 +87,5 @@ class PlayersView:
         if go_back == 0:
             if return_to_menu:
                 return_to_menu()
-            else:   
+            else:
                 self.back()

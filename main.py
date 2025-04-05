@@ -7,11 +7,11 @@ from src.helpers.colors import bcolors
 def main():
     # Setup signal handlers
     setup_signal_handlers()
-    
+
     # Display welcome message
     print(LOGO_TOURNOI_ECHECS)
     print(f"\n{bcolors.OKBLUE}Bienvenue dans le gestionnaire de tournois d'échecs !{bcolors.ENDC}\n")
-    
+
     # Start the application
     app_view = AppView()
     app_view.start()
